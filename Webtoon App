@@ -1,0 +1,100 @@
+/* This is a sample of what a Webtoon app's SQL could look like */
+
+CREATE TABLE webtoons (
+    id INTEGER PRIMARY KEY,
+    webtoon_id INTEGER,
+    title TEXT,
+    chapter INTEGER);
+    
+CREATE TABLE user_1 (
+    id INTEGER PRIMARY KEY,
+    webtoon_id INTEGER,
+    chapter INTEGER,
+    rating INTEGER);
+
+CREATE TABLE user_2 (
+    id INTEGER PRIMARY KEY,
+    webtoon_id INTEGER,
+    chapter INTEGER,
+    rating INTEGER);
+    
+INSERT INTO webtoons VALUES(1, 1, "Solo Leveling", 1);
+INSERT INTO webtoons VALUES(2, 1, "Solo Leveling", 2);
+INSERT INTO webtoons VALUES(3, 1, "Solo Leveling", 3);
+INSERT INTO webtoons VALUES(4, 1, "Solo Leveling", 4);
+INSERT INTO webtoons VALUES(5, 1, "Solo Leveling", 5);
+INSERT INTO webtoons VALUES(6, 2, "The World After The Fall", 1);
+INSERT INTO webtoons VALUES(7, 2, "The World After The Fall", 2);
+INSERT INTO webtoons VALUES(8, 2, "The World After The Fall", 3);
+INSERT INTO webtoons VALUES(9, 2, "The World After The Fall", 4);
+INSERT INTO webtoons VALUES(10, 2, "The World After The Fall", 5);
+INSERT INTO webtoons VALUES(11, 3, "Nano Machine", 1);
+INSERT INTO webtoons VALUES(12, 3, "Nano Machine", 2);
+INSERT INTO webtoons VALUES(13, 3, "Nano Machine", 3);
+INSERT INTO webtoons VALUES(14, 3, "Nano Machine", 4);
+
+INSERT INTO user_1 VALUES(1, 1, 1, 5);
+INSERT INTO user_1 VALUES(2, 1, 2, 4);
+INSERT INTO user_1 VALUES(3, 1, 3, 4);
+INSERT INTO user_1 VALUES(4, 1, 4, 2);
+INSERT INTO user_1 VALUES(5, 1, 5, 5);
+INSERT INTO user_1 VALUES(6, 2, 1, 4);
+INSERT INTO user_1 VALUES(7, 2, 2, 3);
+INSERT INTO user_1 VALUES(8, 3, 1, 5);
+
+INSERT INTO user_2 VALUES(1, 2, 1, 5);
+INSERT INTO user_2 VALUES(2, 2, 2, 3);
+INSERT INTO user_2 VALUES(3, 2, 3, 4);
+INSERT INTO user_2 VALUES(4, 2, 4, 1);
+INSERT INTO user_2 VALUES(5, 1, 1, 4);
+INSERT INTO user_2 VALUES(6, 1, 2, 5);
+INSERT INTO user_2 VALUES(7, 3, 1, 4);
+INSERT INTO user_2 VALUES(8, 3, 2, 5);
+
+
+/* Checking how many chapters of "Solo Leveling" has user_1 read */
+SELECT webtoons.title AS "Title", COUNT(user_1.webtoon_id) AS "Chapters Read" FROM user_1
+    INNER JOIN webtoons
+    ON user_1.webtoon_id = webtoons.webtoon_id AND user_1.chapter = webtoons.chapter
+    WHERE user_1.webtoon_id = 1;
+
+/* When user_1 reads and rates another chapter of "The World After The Fall" */
+INSERT INTO user_1 VALUES(9, 2, 5, 4);
+SELECT 
+    webtoons.title AS "Title", 
+    COUNT(user_1.webtoon_id) AS "Chapters Read", 
+    AVG(user_1.rating) AS "Average Rating" FROM user_1
+    JOIN webtoons
+    ON user_1.webtoon_id = webtoons.webtoon_id AND user_1.chapter = webtoons.chapter
+    WHERE user_1.webtoon_id = 2;
+    
+/* When user_2 marks a chapter of "Solo Leveling" as unread */
+DELETE FROM user_2 WHERE webtoon_id = 1 & chapter = 2;
+SELECT 
+    webtoons.title AS "Title", 
+    COUNT(user_1.webtoon_id) AS "Chapters Read", 
+    AVG(user_1.rating) AS "Average Rating" 
+    FROM user_1
+    JOIN webtoons
+    ON user_1.webtoon_id = webtoons.webtoon_id AND user_1.chapter = webtoons.chapter
+    WHERE user_1.webtoon_id = 1;
+
+/* How many total chapters has each user read */
+SELECT MAX(user_1.id) AS "USER 1", MAX(user_2.id) AS "USER 2" FROM user_1
+    JOIN user_2;
+    
+/* Changing the rating user_1 left on a chapter */
+UPDATE user_1 SET rating = 5 WHERE webtoon_id = 1 AND chapter = 3;
+SELECT rating AS "Rating for Chapter 3 of Solo Leveling From User 1" FROM user_1 WHERE webtoon_id = 1 AND chapter = 3;
+
+/* New Chapter comes out for "Nano Machine" */
+INSERT INTO webtoons VALUES(15, 3, "Nano Machine", 5);
+SELECT * FROM webtoons WHERE webtoon_id = 3;
+
+/* Updating the webtoons database to have a description section */
+ALTER TABLE webtoons ADD description TEXT default "No Description";
+
+/* Updating the description of "Solo Leveling" chapter 1 */
+UPDATE webtoons SET description = "The beginning of the journey." WHERE webtoon_id = 1 AND chapter = 1;
+SELECT * FROM webtoons;
+
