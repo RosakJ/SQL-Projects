@@ -1,0 +1,66 @@
+/* Greek Gods, Roman Gods, Powers, and Marriage */
+CREATE TABLE gods(
+    ID INTEGER NOT NULL PRIMARY KEY,
+    name TEXT,
+    power TEXT);
+
+CREATE TABLE roman_gods(
+    god_id INTEGER,
+    name TEXT);
+    
+CREATE TABLE marriage(
+    partner_1 INTEGER,
+    partner_2 INTEGER);
+
+INSERT INTO gods VALUES(1, "Zeus", "Thunder & Lightning");
+INSERT INTO gods VALUES(2, "Hera", "Marriage & Fertility");
+INSERT INTO gods VALUES(3, "Poseidon", "Sea & Horses");
+INSERT INTO gods VALUES(4, "Ares", "War");
+INSERT INTO gods VALUES(5, "Athena", "Reason & Wisdom");
+INSERT INTO gods VALUES(6, "Demeter", "Agriculture & Harvest");
+INSERT INTO gods VALUES(7, "Apollo", "Sun & Music");
+INSERT INTO gods VALUES(8, "Artemis", "Hunt & Chastity");
+INSERT INTO gods VALUES(9, "Aphrodite", "Sex & Beauty");
+INSERT INTO gods VALUES(10, "Hephaistos", "Fire & Blacksmithing");
+INSERT INTO gods VALUES(11, "Hermes", "Protection & Travel");
+INSERT INTO gods VALUES(12, "Dionysos", "Wine & Fertility");
+
+INSERT INTO roman_gods VALUES(1, "Jupiter");
+INSERT INTO roman_gods VALUES(2, "Juno");
+INSERT INTO roman_gods VALUES(3, "Neptune");
+INSERT INTO roman_gods VALUES(4, "Mars");
+INSERT INTO roman_gods VALUES(5, "Minerva");
+INSERT INTO roman_gods VALUES(6, "Ceres");
+INSERT INTO roman_gods VALUES(7, "Apollo");
+INSERT INTO roman_gods VALUES(8, "Diana");
+INSERT INTO roman_gods VALUES(9, "Venus");
+INSERT INTO roman_gods VALUES(10, "Vulcan");
+INSERT INTO roman_gods VALUES(11, "Mercury");
+INSERT INTO roman_gods VALUES(12, "Bacchus");
+
+INSERT INTO marriage VALUES(1, 2);
+INSERT INTO marriage VALUES(10, 9);
+
+/* Gods with their greek and roman name */
+SELECT gods.name AS "Greek", roman_gods.name AS "Roman" FROM gods
+    JOIN roman_gods
+    ON gods.id = roman_gods.god_id;
+    
+/* Roman God names with their powers */
+SELECT roman_gods.name AS "Roman Name", gods.power FROM roman_gods
+    JOIN gods
+    ON roman_gods.god_id = gods.id;
+
+/* Greek Gods Marriage */
+SELECT a.name AS "Partner 1", b.name AS "Partner 2" FROM marriage
+    JOIN gods a
+    ON a.id = marriage.partner_1
+    JOIN gods b
+    ON b.id = marriage.partner_2;
+
+/* Roman Gods Marriage */
+SELECT a.name AS "Partner 1", b.name AS "Partner 2" FROM marriage
+    JOIN roman_gods a
+    ON a.god_id = marriage.partner_1
+    JOIN roman_gods b
+    ON b.god_id = marriage.partner_2;
